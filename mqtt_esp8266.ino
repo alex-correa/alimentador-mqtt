@@ -1,21 +1,5 @@
 /*
- Basic ESP8266 MQTT example
- This sketch demonstrates the capabilities of the pubsub library in combination
- with the ESP8266 board/library.
- It connects to an MQTT server then:
-  - publishes "hello world" to the topic "outTopic" every two seconds
-  - subscribes to the topic "inTopic", printing out any messages
-    it receives. NB - it assumes the received payloads are strings not binary
-  - If the first character of the topic "inTopic" is an 1, switch ON the ESP Led,
-    else switch it off
- It will reconnect to the server if the connection is lost using a blocking
- reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
- achieve the same result without blocking the main loop.
- To install the ESP8266 board, (using Arduino 1.6.4+):
-  - Add the following 3rd party board manager under "File -> Preferences -> Additional Boards Manager URLs":
-       http://arduino.esp8266.com/stable/package_esp8266com_index.json
-  - Open the "Tools -> Board -> Board Manager" and click install for the ESP8266"
-  - Select your ESP8266 in "Tools -> Board"
+Projeto: Alimentador automático de pets
 */
 
 #include <ESP8266WiFi.h>
@@ -24,7 +8,7 @@
 
 Ultrasonic ultrasonic(D8, D7);
 
-// Update these with values suitable for your network.
+// Valores contendo os dados da rede wireless
 
 const char* ssid = "...";
 const char* password = "...";
@@ -40,7 +24,7 @@ int value = 0;
 void setup_wifi() {
 
   delay(10);
-  // We start by connecting to a WiFi network
+  // Faz a conexao com a rede wireless
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -70,13 +54,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 
-  // Switch on the LED if an 1 was received as first character
+  // Liga o LED se receber 1 como payload
   if ((char)payload[0] == '1') {
-    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because
-    // it is active low on the ESP-01)
+    digitalWrite(BUILTIN_LED, LOW);
   } else if ((char)payload[0] == '0') {
-    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+    digitalWrite(BUILTIN_LED, HIGH);
   } else if ((char)payload[0] == '4') { // Teste envolvendo o rele conectado ao motor
     digitalWrite(4, HIGH);
     delay(1000);
@@ -87,31 +69,31 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void reconnect() {
-  // Loop until we're reconnected
+  // Repete ate reconectar
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
-    // Create a random client ID
+    // Cria um client ID aleatorio
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
-    // Attempt to connect
+    // Tentando conexao
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
+      // Uma vez conectado faz uma publicacao
       client.publish("publicacao_esp8266_271120211330", "hello world");
-      // ... and resubscribe
+      // ... e subscreve novamente
       client.subscribe("subscricao_esp8266_271120211330");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
+      // Espera 5 segundos antes de tentar novamente
       delay(5000);
     }
   }
 }
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  pinMode(BUILTIN_LED, OUTPUT);
   pinMode(4, OUTPUT);
   Serial.begin(115200);
   setup_wifi();
