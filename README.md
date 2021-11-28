@@ -10,3 +10,5 @@ Abaixo temos os principais recursos empregados na execução do projeto:
 * Arduino IDE para programação
 * MQTTBox para testes e operação
 
+### Comunicação com o MQTTBox
+O MQTTBox foi usado para gerar um client com dois tópicos: um subscribe e um publish, responsáveis pelo acionamento das portas digitais do NodeMcu remotamente (conectado através da rede wireless doméstica).
