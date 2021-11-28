@@ -26,8 +26,8 @@ Ultrasonic ultrasonic(D8, D7);
 
 // Update these with values suitable for your network.
 
-const char* ssid = "Semiao";
-const char* password = "word.path-23";
+const char* ssid = "...";
+const char* password = "...";
 const char* mqtt_server = "mqtt.eclipseprojects.io";
 
 WiFiClient espClient;
